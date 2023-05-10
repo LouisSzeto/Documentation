@@ -1,0 +1,37 @@
+<p>We can use <code>HasSufficientBuyingPowerForOrderResult</code> method of the Buying Power Model to filter trades that violate the margin requirement.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public override void OnData(Slice slice)
+{
+    var security = Securities["SPY"];
+    var model = security.BuyingPowerModel;
+    
+    var quantity = &lt;your_intended_buying_quantity&gt;;
+    var initialMargin = model.GetInitialMarginRequirement(
+        new InitialMarginParameters(security, quantity));
+    var marginRemaining = Portfolio.MarginRemaining;
+
+    if (initialMargin <= marginRemaining)
+    {
+        MarketOrder("SPY", quantity);
+    }
+    else
+    {
+        Debug($"Insufficient buying power - initial margin required: {initialMargin.Value}; margin remaining: {marginRemaining}");
+    }
+}
+    </pre>
+    <pre class="python">def OnData(self, slice: Slice) -&gt; None:
+    security = self.Securities["SPY"]
+    model = security.BuyingPowerModel
+
+    quantity = &lt;your_intended_buying_quantity&gt;
+    initial_margin = model.GetInitialMarginRequirement(
+        InitialMarginParameters(security, quantity))
+    margin_remaining = self.Portfolio.MarginRemaining
+
+    if initial_margin <= margin_remaining:
+        self.MarketOrder("SPY", quantity)
+    else:
+        self.Debug(f"Insufficient buying power - initial margin required: {initial_margin.Value}; margin remaining: {margin_remaining}")</pre>
+</div>
